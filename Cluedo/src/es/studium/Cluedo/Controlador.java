@@ -40,6 +40,10 @@ public class Controlador implements ActionListener, WindowListener,  MouseListen
 	VistaResolver resolver = null;
 	VistaHipotesis hipotesis = null;
 	VistaRanking ranking = null;
+	VistaCartasInicialesJugador1 cartasj1 = null;
+	VistaCartasInicialesJugador2 cartasj2= null;
+	VistaCartasInicialesJugador3 cartasj3= null;
+	VistaCartasInicialesJugador4 cartasj4= null;
 
 	Modelo bd;
 	String sentencia = "";
@@ -149,7 +153,8 @@ public class Controlador implements ActionListener, WindowListener,  MouseListen
 	
 	
 	
-	public Controlador(VistaMenu vista, Modelo modelo, VistaTablero tablero, VistaNuevaPartida nuevapartida, VistaAyuda ayuda, VistaOpciones opciones, VistaResolver resolver, VistaHipotesis hipotesis, VistaRanking ranking)
+	public Controlador(VistaMenu vista, Modelo modelo, VistaTablero tablero, VistaNuevaPartida nuevapartida, VistaAyuda ayuda, VistaOpciones opciones, VistaResolver resolver, VistaHipotesis hipotesis, VistaRanking ranking,
+			VistaCartasInicialesJugador1 cartasj1, VistaCartasInicialesJugador2 cartasj2, VistaCartasInicialesJugador3 cartasj3, VistaCartasInicialesJugador4 cartasj4)
 	{
 		
 		//AÑADIR LISTENERS
@@ -163,6 +168,11 @@ public class Controlador implements ActionListener, WindowListener,  MouseListen
 		this.resolver = resolver;
 		this.hipotesis = hipotesis;
 		this.ranking = ranking;
+		this.cartasj1 = cartasj1;
+		this.cartasj2 = cartasj2;
+		this.cartasj3 = cartasj3;
+		this.cartasj4 = cartasj4;
+		
 		
 		vista.btnNuevaPartida.addActionListener(this);
 		vista.btnAyuda.addActionListener(this);
@@ -174,20 +184,32 @@ public class Controlador implements ActionListener, WindowListener,  MouseListen
 		opciones.btnArma.addActionListener(this);
 		opciones.btnSospechoso.addActionListener(this);
 		opciones.btnHabitacion.addActionListener(this);
-		
+		opciones.dlgAvanzar.addWindowListener(this);
+		opciones.dlgCartaNueva.addWindowListener(this);
+		opciones.dlgEstarHabitacion.addWindowListener(this);
 		
 		resolver.frmResolver.addWindowListener(this);
 		resolver.dlgResolver.addWindowListener(this);
 		resolver.dlgGanaste.addWindowListener(this);
 		resolver.btnResolver.addActionListener(this);
 		resolver.btnGanaste.addActionListener(this);
+		resolver.dlgPerdiste.addWindowListener(this);
 		
 		hipotesis.frmHipotesis.addWindowListener(this);
 		hipotesis.dlgHipotesis.addWindowListener(this);
 		hipotesis.btnResolverHipotesis.addActionListener(this);
+		hipotesis.dlgHipotesisRespuestaCorrecta.addWindowListener(this);
+		hipotesis.dlgHipotesisRespuestaEquivocada.addWindowListener(this);
 		
 		
 		nuevapartida.btnAceptarNuevaPartida.addActionListener(this);
+		
+		
+		cartasj1.dlgCartasJugador1.addWindowListener(this);
+		cartasj2.dlgCartasJugador2.addWindowListener(this);
+		cartasj3.dlgCartasJugador3.addWindowListener(this);
+		cartasj4.dlgCartasJugador4.addWindowListener(this);
+		
 		
 		ranking.ventanaRanking.addWindowListener(this);
 		ranking.btnAceptarRanking.addActionListener(this);
@@ -269,6 +291,7 @@ public void actionPerformed(ActionEvent evento)
 		listahabitaciones.remove(listasolucion.get(2));
 		
 		
+		//MOSTRAR SOLUCION AL EMPEZAR PARTIDA
 		System.out.println(listasolucion.get(0));
 		System.out.println(listasolucion.get(1));
 		System.out.println(listasolucion.get(2));
@@ -326,45 +349,54 @@ public void actionPerformed(ActionEvent evento)
 	{
 		if(listaarmas.size()==0)
 		{
-			System.out.println("No hay más cartas de arma");
+			opciones.lblcartaNueva.setText("No quedan más");
+			opciones.dlgCartaNueva.setVisible(true);
 		}
 		else if(listaarmas.size()!=0)
 		{
 			if(turno==0)
 			{
 				resultado = r.nextInt(listaarmas.size());
-				System.out.println("Has obtenido la siguiente carta: "+listaarmas.get(resultado));
+				opciones.lblcartaNueva.setText(listaarmas.get(resultado));
+				opciones.dlgCartaNueva.setVisible(true);
 				listaInventarioJugador1.add(listaarmas.get(resultado));
 				listaarmas.remove(resultado);
 				opciones.dlgOpciones.setVisible(false);
 				tirada=0;
+				tablero.pintarTiradas(String.valueOf(tirada));
 			}
 			if(turno==1)
 			{
 				resultado = r.nextInt(listaarmas.size());
-				System.out.println("Has obtenido la siguiente carta: "+listaarmas.get(resultado));
+				opciones.lblcartaNueva.setText(listaarmas.get(resultado));
+				opciones.dlgCartaNueva.setVisible(true);
 				listaInventarioJugador2.add(listaarmas.get(resultado));
 				listaarmas.remove(resultado);
 				opciones.dlgOpciones.setVisible(false);
 				tirada=0;
+				tablero.pintarTiradas(String.valueOf(tirada));
 			}
 			if(turno==2)
 			{
 				resultado = r.nextInt(listaarmas.size());
-				System.out.println("Has obtenido la siguiente carta: "+listaarmas.get(resultado));
+				opciones.lblcartaNueva.setText(listaarmas.get(resultado));
+				opciones.dlgCartaNueva.setVisible(true);
 				listaInventarioJugador3.add(listaarmas.get(resultado));
 				listaarmas.remove(resultado);
 				opciones.dlgOpciones.setVisible(false);
 				tirada=0;
+				tablero.pintarTiradas(String.valueOf(tirada));
 			}
 			if(turno==3)
 			{
 				resultado = r.nextInt(listaarmas.size());
-				System.out.println("Has obtenido la siguiente carta: "+listaarmas.get(resultado));
+				opciones.lblcartaNueva.setText(listaarmas.get(resultado));
+				opciones.dlgCartaNueva.setVisible(true);
 				listaInventarioJugador4.add(listaarmas.get(resultado));
 				listaarmas.remove(resultado);
 				opciones.dlgOpciones.setVisible(false);
 				tirada=0;
+				tablero.pintarTiradas(String.valueOf(tirada));
 			}
 		}
 		
@@ -374,45 +406,54 @@ public void actionPerformed(ActionEvent evento)
 	{
 		if(listasus.size()==0)
 		{
-			System.out.println("No hay más cartas de sospechosos");
+			opciones.lblcartaNueva.setText("No quedan más");
+			opciones.dlgCartaNueva.setVisible(true);
 		}
 		else if(listasus.size()!=0)
 		{
 			if(turno==0)
 			{
 				resultado = r.nextInt(listasus.size());
-				System.out.println("Has obtenido la siguiente carta: "+listasus.get(resultado));
+				opciones.lblcartaNueva.setText(listasus.get(resultado));
+				opciones.dlgCartaNueva.setVisible(true);
 				listaInventarioJugador1.add(listasus.get(resultado));
 				listasus.remove(resultado);
 				opciones.dlgOpciones.setVisible(false);
 				tirada=0;
+				tablero.pintarTiradas(String.valueOf(tirada));
 			}
 			if(turno==1)
 			{
 				resultado = r.nextInt(listasus.size());
-				System.out.println("Has obtenido la siguiente carta: "+listasus.get(resultado));
+				opciones.lblcartaNueva.setText(listasus.get(resultado));
+				opciones.dlgCartaNueva.setVisible(true);
 				listaInventarioJugador2.add(listasus.get(resultado));
 				listasus.remove(resultado);
 				opciones.dlgOpciones.setVisible(false);
 				tirada=0;
+				tablero.pintarTiradas(String.valueOf(tirada));
 			}
 			if(turno==2)
 			{
 				resultado = r.nextInt(listasus.size());
-				System.out.println("Has obtenido la siguiente carta: "+listasus.get(resultado));
+				opciones.lblcartaNueva.setText(listasus.get(resultado));
+				opciones.dlgCartaNueva.setVisible(true);
 				listaInventarioJugador3.add(listasus.get(resultado));
 				listasus.remove(resultado);
 				opciones.dlgOpciones.setVisible(false);
 				tirada=0;
+				tablero.pintarTiradas(String.valueOf(tirada));
 			}
 			if(turno==3)
 			{
 				resultado = r.nextInt(listasus.size());
-				System.out.println("Has obtenido la siguiente carta: "+listasus.get(resultado));
+				opciones.lblcartaNueva.setText(listasus.get(resultado));
+				opciones.dlgCartaNueva.setVisible(true);
 				listaInventarioJugador4.add(listasus.get(resultado));
 				listasus.remove(resultado);
 				opciones.dlgOpciones.setVisible(false);
 				tirada=0;
+				tablero.pintarTiradas(String.valueOf(tirada));
 			}
 		}
 	}
@@ -421,45 +462,54 @@ public void actionPerformed(ActionEvent evento)
 	{
 		if(listahabitaciones.size()==0)
 		{
-			System.out.println("No hay más cartas de habitaciones");
+			opciones.lblcartaNueva.setText("No quedan más");
+			opciones.dlgCartaNueva.setVisible(true);
 		}
 		else if(listahabitaciones.size()!=0)
 		{
 			if(turno==0)
 			{
 				resultado = r.nextInt(listahabitaciones.size());
-				System.out.println("Has obtenido la siguiente carta: "+listahabitaciones.get(resultado));
+				opciones.lblcartaNueva.setText(listahabitaciones.get(resultado));
+				opciones.dlgCartaNueva.setVisible(true);
 				listaInventarioJugador1.add(listahabitaciones.get(resultado));
 				listahabitaciones.remove(resultado);
 				opciones.dlgOpciones.setVisible(false);
 				tirada=0;
+				tablero.pintarTiradas(String.valueOf(tirada));
 			}
 			if(turno==1)
 			{
 				resultado = r.nextInt(listahabitaciones.size());
-				System.out.println("Has obtenido la siguiente carta: "+listahabitaciones.get(resultado));
+				opciones.lblcartaNueva.setText(listahabitaciones.get(resultado));
+				opciones.dlgCartaNueva.setVisible(true);
 				listaInventarioJugador2.add(listahabitaciones.get(resultado));
 				listahabitaciones.remove(resultado);
 				opciones.dlgOpciones.setVisible(false);
 				tirada=0;
+				tablero.pintarTiradas(String.valueOf(tirada));
 			}
 			if(turno==2)
 			{
 				resultado = r.nextInt(listahabitaciones.size());
-				System.out.println("Has obtenido la siguiente carta: "+listahabitaciones.get(resultado));
+				opciones.lblcartaNueva.setText(listahabitaciones.get(resultado));
+				opciones.dlgCartaNueva.setVisible(true);
 				listaInventarioJugador3.add(listahabitaciones.get(resultado));
 				listahabitaciones.remove(resultado);
 				opciones.dlgOpciones.setVisible(false);
 				tirada=0;
+				tablero.pintarTiradas(String.valueOf(tirada));
 			}
 			if(turno==3)
 			{
 				resultado = r.nextInt(listahabitaciones.size());
-				System.out.println("Has obtenido la siguiente carta: "+listahabitaciones.get(resultado));
+				opciones.lblcartaNueva.setText(listahabitaciones.get(resultado));
+				opciones.dlgCartaNueva.setVisible(true);
 				listaInventarioJugador4.add(listahabitaciones.get(resultado));
 				listahabitaciones.remove(resultado);
 				opciones.dlgOpciones.setVisible(false);
 				tirada=0;
+				tablero.pintarTiradas(String.valueOf(tirada));
 			}
 		}
 	}
@@ -473,65 +523,56 @@ public void actionPerformed(ActionEvent evento)
 		{
 			if(resolver.txfArma.getText().equals(listasolucion.get(0)) && resolver.txfSus.getText().equals(listasolucion.get(1)) && resolver.txfHabitacion.getText().equals(listasolucion.get(2)))
 			{
-				System.out.println("");
-				System.out.println("Has tardado el siguiente número de turnos: " + turnosJugador1);
-				System.out.println(nombreJugador1);
+				resolver.lblTurnosNumero.setText(turnosJugador1 + " turnos.");
 				resolver.dlgGanaste.setVisible(true);
 			}
 			else
 			{
 				resolver.dlgResolver.setVisible(false);
 				limpiarResolver();
-				System.out.println("Algo no está bien");
-				System.out.println("A partir de ahora solo puedes moverte, para que no te aburras");
+				resolver.dlgPerdiste.setVisible(true);
 			}
 		}
 		if(turno==1)
 		{
 			if(resolver.txfArma.getText().equals(listasolucion.get(0)) && resolver.txfSus.getText().equals(listasolucion.get(1)) && resolver.txfHabitacion.getText().equals(listasolucion.get(2)))
 			{
-				System.out.println("");
-				System.out.println("Has tardado el siguiente número de turnos: " + turnosJugador2);
+				resolver.lblTurnosNumero.setText(turnosJugador2 + " turnos.");
 				resolver.dlgGanaste.setVisible(true);
 			}
 			else
 			{
 				resolver.dlgResolver.setVisible(false);
 				limpiarResolver();
-				System.out.println("Algo no está bien");
-				System.out.println("A partir de ahora solo puedes moverte, para que no te aburras");
+				resolver.dlgPerdiste.setVisible(true);
 			}
 		}
 		if(turno==2)
 		{
 			if(resolver.txfArma.getText().equals(listasolucion.get(0)) && resolver.txfSus.getText().equals(listasolucion.get(1)) && resolver.txfHabitacion.getText().equals(listasolucion.get(2)))
 			{
-				System.out.println("");
-				System.out.println("Has tardado el siguiente número de turnos: " + turnosJugador3);
+				resolver.lblTurnosNumero.setText(turnosJugador3 + " turnos.");
 				resolver.dlgGanaste.setVisible(true);
 			}
 			else
 			{
 				resolver.dlgResolver.setVisible(false);
 				limpiarResolver();
-				System.out.println("Algo no está bien");
-				System.out.println("A partir de ahora solo puedes moverte, para que no te aburras");
+				resolver.dlgPerdiste.setVisible(true);
 			}
 		}
 		if(turno==3)
 		{
 			if(resolver.txfArma.getText().equals(listasolucion.get(0)) && resolver.txfSus.getText().equals(listasolucion.get(1)) && resolver.txfHabitacion.getText().equals(listasolucion.get(2)))
 			{
-				System.out.println("");
-				System.out.println("Has tardado el siguiente número de turnos: " + turnosJugador4);
+				resolver.lblTurnosNumero.setText(turnosJugador4 + " turnos.");
 				resolver.dlgGanaste.setVisible(true);
 			}
 			else
 			{
 				resolver.dlgResolver.setVisible(false);
 				limpiarResolver();
-				System.out.println("Algo no está bien");
-				System.out.println("A partir de ahora solo puedes moverte, para que no te aburras");
+				resolver.dlgPerdiste.setVisible(true);
 			}
 		}
 	}
@@ -545,59 +586,54 @@ public void actionPerformed(ActionEvent evento)
 		{
 			if(!resolver.txfArma.getText().equals(listasolucion.get(0)) || !resolver.txfSus.getText().equals(listasolucion.get(1)) || !resolver.txfHabitacion.getText().equals(listasolucion.get(2)))
 			{
-				System.out.println("");
-				System.out.println("Tu hipótesis no es correcta");
+				hipotesis.dlgHipotesisRespuestaEquivocada.setVisible(true);
 				limpiarHipotesis();
 				hipotesis.dlgHipotesis.setVisible(false);				
 			}
 			else 
 			{
-				System.out.println("");
-				System.out.println("Tu hipótesis es correcta");
+				hipotesis.dlgHipotesisRespuestaCorrecta.setVisible(true);
 			}
 		}
 		else if(turno==1)
 		{
 			if(!resolver.txfArma.getText().equals(listasolucion.get(0)) || !resolver.txfSus.getText().equals(listasolucion.get(1)) || !resolver.txfHabitacion.getText().equals(listasolucion.get(2)))
 			{
-				System.out.println("");
-				System.out.println("Tu hipótesis no es correcta");
+				hipotesis.dlgHipotesisRespuestaEquivocada.setVisible(true);
 				limpiarHipotesis();
 				hipotesis.dlgHipotesis.setVisible(false);
 				
 			}
 			else
 			{
-				System.out.println("Tu hipótesis es correcta");
+				hipotesis.dlgHipotesisRespuestaCorrecta.setVisible(true);
 			}
 		}
 		else if(turno==2)
 		{
 			if(!resolver.txfArma.getText().equals(listasolucion.get(0)) || !resolver.txfSus.getText().equals(listasolucion.get(1)) || !resolver.txfHabitacion.getText().equals(listasolucion.get(2)))	
 				{
-					System.out.println("");
-					System.out.println("Tu hipótesis no es correcta");
+				hipotesis.dlgHipotesisRespuestaEquivocada.setVisible(true);
 					limpiarHipotesis();
 					hipotesis.dlgHipotesis.setVisible(false);
 					
 				}
 			else
 			{
-				System.out.println("Tu hipótesis es correcta");
+				hipotesis.dlgHipotesisRespuestaCorrecta.setVisible(true);
 			}
 		}
 		else if(turno==3)
 		{
 			if(!resolver.txfArma.getText().equals(listasolucion.get(0)) || !resolver.txfSus.getText().equals(listasolucion.get(1)) || !resolver.txfHabitacion.getText().equals(listasolucion.get(2)))					
 					{
-						System.out.println("");
-						System.out.println("Tu hipótesis no es correcta");
+				hipotesis.dlgHipotesisRespuestaEquivocada.setVisible(true);
 						limpiarHipotesis();
 						hipotesis.dlgHipotesis.setVisible(false);						
 					}
 			else
 			{
-				System.out.println("Tu hipótesis es correcta");
+				hipotesis.dlgHipotesisRespuestaCorrecta.setVisible(true);
 			}
 		}
 	}
@@ -746,28 +782,25 @@ public void InicioJugador1()
 	if(posicionJugador1==19)
 	{
 		
-	System.out.println("");
-	System.out.println(nombreJugador1 + " tus cartas son las siguientes:");
-	System.out.println("");
+
 	
 	resultado = r.nextInt(listasus.size());
-	System.out.println(listasus.get(resultado));
+	cartasj1.Carta1Jugador1.setText(listasus.get(resultado));
 	listaInventarioJugador1.add(listasus.get(resultado));
 	listasus.remove(resultado);
 	
 	
 	resultado = r.nextInt(listaarmas.size());
-	System.out.println(listaarmas.get(resultado));
+	cartasj1.Carta2Jugador1.setText(listaarmas.get(resultado));
 	listaInventarioJugador1.add(listaarmas.get(resultado));
 	listaarmas.remove(resultado);
 	
 	resultado = r.nextInt(listahabitaciones.size());
-	System.out.println(listahabitaciones.get(resultado));
+	cartasj1.Carta3Jugador1.setText(listahabitaciones.get(resultado));
 	listaInventarioJugador1.add(listahabitaciones.get(resultado));
 	listahabitaciones.remove(resultado);
 	
-	System.out.println("");
-	System.out.println("Te toca tirar el dado");
+	cartasj1.dlgCartasJugador1.setVisible(true);
 	
 	}
 }
@@ -833,40 +866,27 @@ public void InicioJugador4()
 
 public void MostrarInicioJugador2()
 {
-		System.out.println("");
-		System.out.println(nombreJugador2 + " tus cartas son las siguientes:");
-		System.out.println("");
-		System.out.println(listaInventarioJugador2.get(0));
-		System.out.println(listaInventarioJugador2.get(1));
-		System.out.println(listaInventarioJugador2.get(2));
-		System.out.println("");
-		System.out.println("Te toca tirar el dado");
-	
+		cartasj2.Carta1Jugador2.setText(listaInventarioJugador2.get(0));
+		cartasj2.Carta2Jugador2.setText(listaInventarioJugador2.get(1));
+		cartasj2.Carta3Jugador2.setText(listaInventarioJugador2.get(2));
+		cartasj2.dlgCartasJugador2.setVisible(true);
 }
 
 public void MostrarInicioJugador3()
 {
-		System.out.println("");
-		System.out.println(nombreJugador3 + " tus cartas son las siguientes:");
-		System.out.println("");
-		System.out.println(listaInventarioJugador3.get(0));
-		System.out.println(listaInventarioJugador3.get(1));
-		System.out.println(listaInventarioJugador3.get(2));
-		System.out.println("");
-		System.out.println("Te toca tirar el dado");
+	cartasj3.Carta1Jugador3.setText(listaInventarioJugador3.get(0));
+	cartasj3.Carta2Jugador3.setText(listaInventarioJugador3.get(1));
+	cartasj3.Carta3Jugador3.setText(listaInventarioJugador3.get(2));
+	cartasj3.dlgCartasJugador3.setVisible(true);
 	
 }
 
 public void MostrarInicioJugador4()
 {
-		System.out.println("");
-		System.out.println(nombreJugador4 + " tus cartas son las siguientes:");
-		System.out.println("");
-		System.out.println(listaInventarioJugador4.get(0));
-		System.out.println(listaInventarioJugador4.get(1));
-		System.out.println(listaInventarioJugador4.get(2));
-		System.out.println("");
-		System.out.println("Te toca tirar el dado");
+	cartasj4.Carta1Jugador4.setText(listaInventarioJugador4.get(0));
+	cartasj4.Carta2Jugador4.setText(listaInventarioJugador4.get(1));
+	cartasj4.Carta3Jugador4.setText(listaInventarioJugador4.get(2));
+	cartasj4.dlgCartasJugador4.setVisible(true);
 	
 }
 
@@ -876,6 +896,50 @@ public void windowClosing(WindowEvent evento)
 	if(evento.getSource().equals(tablero))
 	{
 	System.exit(0);
+	}
+	if(evento.getSource().equals(opciones.dlgEstarHabitacion))
+	{
+	opciones.dlgEstarHabitacion.setVisible(false);
+	}
+	if(evento.getSource().equals(resolver.dlgPerdiste))
+	{
+	resolver.dlgPerdiste.setVisible(false);
+	}
+	if(evento.getSource().equals(hipotesis.dlgHipotesisRespuestaCorrecta))
+	{
+	hipotesis.dlgHipotesisRespuestaCorrecta.setVisible(false);
+	}
+	if(evento.getSource().equals(hipotesis.dlgHipotesisRespuestaEquivocada))
+	{
+	hipotesis.dlgHipotesisRespuestaEquivocada.setVisible(false);
+	}
+	if(evento.getSource().equals(opciones.dlgCartaNueva))
+	{
+	opciones.dlgCartaNueva.setVisible(false);
+	}
+	if(evento.getSource().equals(opciones.dlgAvanzar))
+	{
+	opciones.dlgAvanzar.setVisible(false);
+	}
+	
+	if(evento.getSource().equals(cartasj1.dlgCartasJugador1))
+	{
+	cartasj1.dlgCartasJugador1.setVisible(false);
+	}
+	
+	if(evento.getSource().equals(cartasj2.dlgCartasJugador2))
+	{
+	cartasj2.dlgCartasJugador2.setVisible(false);
+	}
+	
+	if(evento.getSource().equals(cartasj3.dlgCartasJugador3))
+	{
+	cartasj3.dlgCartasJugador3.setVisible(false);
+	}
+	
+	if(evento.getSource().equals(cartasj4.dlgCartasJugador4))
+	{
+	cartasj4.dlgCartasJugador4.setVisible(false);
 	}
 	
 	if(evento.getSource().equals(ranking.ventanaRanking))
@@ -892,13 +956,7 @@ public void windowClosing(WindowEvent evento)
 	{
 		resolver.dlgResolver.setVisible(false);
 	}
-	
-	if(evento.getSource().equals(opciones.dlgOpciones))
-	{
-		System.out.println("Debes elegir una opción");
-		//opciones.dlgOpciones.setVisible(false);
-	}
-	
+		
 	if(evento.getSource().equals(nuevapartida.ventanaNuevaPartida))
 	{
 		nuevapartida.ventanaNuevaPartida.setVisible(false);
@@ -937,40 +995,28 @@ public void mouseClicked(MouseEvent evento)
 		if(turno==0 && tirada==0)
 		{
 			tirada = this.modelo.tirada();
-			System.out.println(nombreJugador1 + " --> "+ "Tienes el siguiente número de movimientos: " +tirada);
+			tablero.pintarTiradas(String.valueOf(tirada));
 			
 		}
-		else if(turno==0 && tirada>0)
-		{
-			System.out.println("Solo una vez por turno");
-		}
+		
 		if(turno==1 && tirada==0)
 		{
 			tirada = this.modelo.tirada();
-			System.out.println(nombreJugador2 + " --> "+ "Tienes el siguiente número de movimientos: " +tirada);
+			tablero.pintarTiradas(String.valueOf(tirada));
 		}
-		else if(turno==1 && tirada>0)
-		{
-			System.out.println("Solo una vez por turno");
-		}
+		
 		if(turno==2 && tirada==0)
 		{
 			tirada = this.modelo.tirada();
-			System.out.println(nombreJugador3 + " --> "+ "Tienes el siguiente número de movimientos: " +tirada);
+			tablero.pintarTiradas(String.valueOf(tirada));
 		}
-		else if(turno==2 && tirada>0)
-		{
-			System.out.println("Solo una vez por turno");
-		}
+		
 		if(turno==3 && tirada==0)
 		{
 			tirada = this.modelo.tirada();
-			System.out.println(nombreJugador4 + " --> "+ "Tienes el siguiente número de movimientos: " +tirada);
+			tablero.pintarTiradas(String.valueOf(tirada));
 		}
-		else if(turno==3 && tirada>0)
-		{
-			System.out.println("Solo una vez por turno");
-		}
+		
 				
 	}
 	
@@ -1000,7 +1046,7 @@ public void mouseClicked(MouseEvent evento)
 		}
 		else if (listaarmas.size()!=0 && listasus.size()!=0 && listahabitaciones.size()!=0)
 		{
-			System.out.println("Debes estar en una habitación");
+			opciones.dlgEstarHabitacion.setVisible(true);
 		}
 	}	
 		
@@ -1030,7 +1076,7 @@ public void mouseClicked(MouseEvent evento)
 			}
 			else if (listaarmas.size()!=0 && listasus.size()!=0 && listahabitaciones.size()!=0)
 			{
-				System.out.println("Debes estar en una habitación");
+				opciones.dlgEstarHabitacion.setVisible(true);
 			}
 		}
 		
@@ -1066,193 +1112,193 @@ public void keyPressed(KeyEvent pulsartecla)
 			
 			if((posicionJugador1==26)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==26)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[21][0], casillas[21][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=21;
 				movido1 = true;
 			}
 			else if((posicionJugador1==26)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==26)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 
 			if((posicionJugador1==36)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==36)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[33][0], casillas[33][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=33;
 				movido1 = true;
 			}
 			else if((posicionJugador1==36)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==36)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 
 			if((posicionJugador1==33)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==33)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[27][0], casillas[27][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=27;
 				movido1 = true;
 			}
 			else if((posicionJugador1==33)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==33)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 
 			if((posicionJugador1==28)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==28)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[23][0], casillas[23][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=23;
 				movido1 = true;
 			}
 			else if((posicionJugador1==28)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==28)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 
 			if((posicionJugador1==34)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==34)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[29][0], casillas[29][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=29;
 				movido1 = true;
 			}
 			else if((posicionJugador1==34)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==34)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 
 			if((posicionJugador1==35)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==35)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[30][0], casillas[30][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=30;
 				movido1 = true;
 			}
 			else if((posicionJugador1==35)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==35)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			
 			//abajo 1
 			
 			if((posicionJugador1==0)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==0)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==0)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[5][0], casillas[5][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=5;
 				movido1 = true;
 			}
 			else if((posicionJugador1==0)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 
 			if((posicionJugador1==1)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==1)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==1)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[6][0], casillas[6][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=6;
 				movido1 = true;
 			}
 			else if((posicionJugador1==1)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 
 			if((posicionJugador1==13)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==13)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==13)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[21][0], casillas[21][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=21;
 				movido1 = true;
 			}
 			else if((posicionJugador1==13)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			
 			//derecha 2
@@ -1262,189 +1308,189 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[20][0], casillas[20][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=20;
 				movido1 = true;
 			}
 			else if((posicionJugador1==19)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==19)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==19)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 				
 			else if((posicionJugador1==20)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[21][0], casillas[21][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=21;
 				movido1=true;
 			}
 			else if((posicionJugador1==20)&&(key == KeyEvent.VK_UP))
 			{
-				System.out.println("Imposible avanzar por aquí");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==20)&&(key == KeyEvent.VK_LEFT))
 			{
-				System.out.println("Imposible avanzar por aquí");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==20)&&(key == KeyEvent.VK_DOWN))
 			{
-				System.out.println("Imposible avanzar por aquí");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 						
 			//izquierda 3
 			
 			if((posicionJugador1==12)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==12)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==12)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==12)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[11][0], casillas[11][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=11;
 				movido1 = true;
 			}
 
 			if((posicionJugador1==4)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==4)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==4)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==4)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[3][0], casillas[3][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=3;
 				movido1 = true;
 			}
 
 			if((posicionJugador1==11)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==11)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==11)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==11)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[10][0], casillas[10][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=10;
 				movido1 = true;
 			}
 
 			if((posicionJugador1==16)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==16)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==16)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==16)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[9][0], casillas[9][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=9;
 				movido1 = true;
 			}
 
 			if((posicionJugador1==25)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==25)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==25)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==25)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[24][0], casillas[24][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=24;
 				movido1 = true;
 			}
 
 			if((posicionJugador1==32)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==32)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==32)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==32)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[31][0], casillas[31][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=31;
 				movido1 = true;
 			}
 
 			if((posicionJugador1==31)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==31)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==31)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==31)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[30][0], casillas[30][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=30;
 				movido1 = true;
 			}
@@ -1454,7 +1500,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[6][0], casillas[6][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=6;
 				movido1 = true;
 			}
@@ -1462,7 +1508,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[0][0], casillas[0][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 
 				if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 				{
@@ -1478,24 +1524,24 @@ public void keyPressed(KeyEvent pulsartecla)
 			}
 			else if((posicionJugador1==5)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==5)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			
 			//arriba abajo 6
 			
 			if((posicionJugador1==14)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==14)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[7][0], casillas[7][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=7;
 				movido1 = true;
 			}
@@ -1503,24 +1549,24 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[17][0], casillas[17][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=17;
 				movido1 = true;
 			}
 			else if((posicionJugador1==14)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 
 			if((posicionJugador1==15)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==15)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[9][0], casillas[9][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=9;
 				movido1 = true;
 			}
@@ -1528,24 +1574,24 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[18][0], casillas[18][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=18;
 				movido1 = true;
 			}
 			else if((posicionJugador1==15)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 
 			if((posicionJugador1==17)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==17)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[14][0], casillas[14][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=14;
 				movido1 = true;
 			}
@@ -1553,24 +1599,24 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[22][0], casillas[22][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=22;
 				movido1 = true;
 			}
 			else if((posicionJugador1==17)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 
 			if((posicionJugador1==18)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==18)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[15][0], casillas[15][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=15;
 				movido1 = true;
 			}
@@ -1578,24 +1624,24 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[24][0], casillas[24][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=24;
 				movido1 = true;
 			}
 			else if((posicionJugador1==18)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 
 			if((posicionJugador1==27)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==27)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[22][0], casillas[22][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=22;
 				movido1 = true;
 			}
@@ -1603,13 +1649,13 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[33][0], casillas[33][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=33;
 				movido1 = true;
 			}
 			else if((posicionJugador1==27)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			
 			//abajo derecha 7
@@ -1617,25 +1663,25 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[3][0], casillas[3][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=3;
 				movido1 = true;
 			}
 			else if((posicionJugador1==2)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==2)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[7][0], casillas[7][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=7;
 				movido1 = true;
 			}
 			else if((posicionJugador1==2)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			
 			// 11=arriba derecha abajo  
@@ -1644,7 +1690,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[30][0], casillas[30][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=30;
 				movido1 = true;
 			}
@@ -1652,7 +1698,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[24][0], casillas[24][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=24;
 				movido1 = true;
 			}
@@ -1660,20 +1706,20 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[34][0], casillas[34][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=34;
 				movido1 = true;
 			}
 			else if((posicionJugador1==29)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 
 			if((posicionJugador1==10)&&(key == KeyEvent.VK_RIGHT)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[11][0], casillas[11][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=11;
 				movido1 = true;
 			}
@@ -1681,7 +1727,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[3][0], casillas[3][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=3;
 				movido1 = true;
 			}
@@ -1689,13 +1735,13 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[9][0], casillas[9][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=9;
 				movido1 = true;
 			}
 			else if((posicionJugador1==10)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			
 			//12=derecha izquierda   
@@ -1703,23 +1749,23 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[9][0], casillas[9][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=9;
 				movido1 = true;
 			}
 			else if((posicionJugador1==8)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==8)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==8)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[7][0], casillas[7][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=7;
 				movido1 = true;
 			}
@@ -1729,7 +1775,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[4][0], casillas[4][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 
 				if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 				{
@@ -1745,13 +1791,13 @@ public void keyPressed(KeyEvent pulsartecla)
 			}
 			else if((posicionJugador1==3)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==3)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[10][0], casillas[10][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=10;
 				movido1 = true;
 			}
@@ -1759,7 +1805,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[2][0], casillas[2][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 
 				if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 				{
@@ -1777,19 +1823,19 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[24][0], casillas[24][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=24;
 				movido1 = true;
 			}
 			else if((posicionJugador1==23)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==23)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[28][0], casillas[28][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 
 				if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 				{
@@ -1807,7 +1853,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[22][0], casillas[22][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=22;
 				movido1 = true;
 			}
@@ -1816,19 +1862,19 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[31][0], casillas[31][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=31;
 				movido1 = true;
 			}
 			else if((posicionJugador1==30)&&(key == KeyEvent.VK_UP)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==30)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[35][0], casillas[35][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 
 				if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 				{
@@ -1846,7 +1892,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[29][0], casillas[29][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=29;
 				movido1 = true;
 			}
@@ -1855,7 +1901,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[7][0], casillas[7][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=7;
 				movido1 = true;
 			}
@@ -1863,19 +1909,19 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[1][0], casillas[1][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=1;
 				movido1 = true;
 			}
 			else if((posicionJugador1==6)&&(key == KeyEvent.VK_DOWN)&&(movido1==false))
 			{
-				System.out.println("Imposible avanzar");
+				opciones.dlgAvanzar.setVisible(true);
 			}
 			else if((posicionJugador1==6)&&(key == KeyEvent.VK_LEFT)&&(movido1==false))
 			{
 				this.tablero.actualizarJugador1(casillas[5][0], casillas[5][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=5;
 				movido1 = true;
 			}
@@ -1885,7 +1931,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[22][0], casillas[22][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=22;
 				movido1 = true;
 			}
@@ -1893,7 +1939,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[13][0], casillas[13][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				
 				if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 				{
@@ -1912,7 +1958,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				
 				this.tablero.actualizarJugador1(casillas[26][0], casillas[26][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 
 				if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 				{
@@ -1930,7 +1976,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[20][0], casillas[20][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=20;
 				movido1 = true;
 				
@@ -1940,7 +1986,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[23][0], casillas[23][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=23;
 				movido1 = true;
 			}
@@ -1948,7 +1994,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[17][0], casillas[17][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=17;
 				movido1 = true;
 			}
@@ -1956,7 +2002,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[27][0], casillas[27][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=27;
 				movido1 = true;
 			}
@@ -1964,7 +2010,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[21][0], casillas[21][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=21;
 				movido1 = true;
 			}
@@ -1973,7 +2019,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[25][0], casillas[25][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 
 				if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 				{
@@ -1991,7 +2037,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[18][0], casillas[18][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=18;
 				movido1 = true;
 			}
@@ -1999,7 +2045,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[29][0], casillas[29][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=29;
 				movido1 = true;
 			}
@@ -2007,7 +2053,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[23][0], casillas[23][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=23;
 				movido1 = true;
 			}
@@ -2016,7 +2062,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[16][0], casillas[16][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 
 				if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 				{
@@ -2034,7 +2080,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[10][0], casillas[10][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=10;
 				movido1 = true;
 			}
@@ -2042,7 +2088,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[15][0], casillas[15][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=15;
 				movido1 = true;
 			}
@@ -2050,7 +2096,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[8][0], casillas[8][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=8;
 				movido1 = true;
 			}
@@ -2059,7 +2105,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[8][0], casillas[8][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=8;
 				movido1 = true;
 			}
@@ -2067,7 +2113,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[2][0], casillas[2][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 
 				if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 				{
@@ -2085,7 +2131,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[14][0], casillas[14][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=14;
 				movido1 = true;
 			}
@@ -2093,7 +2139,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			{
 				this.tablero.actualizarJugador1(casillas[6][0], casillas[6][1]);
 				tirada=tirada-1;
-				System.out.println(tirada);
+				tablero.pintarTiradas(String.valueOf(tirada));
 				posicionJugador1=6;
 				movido1 = true;
 			}
@@ -2105,9 +2151,7 @@ public void keyPressed(KeyEvent pulsartecla)
 			
 			if(tirada==0)
 			{
-				System.out.println("");
-				System.out.println("Turno de " + nombreJugador2 );
-				System.out.println("");
+				
 				turno++;
 				turnosJugador2++;
 				nombreJugadorActual = nombreJugador2;
@@ -2130,194 +2174,194 @@ public void keyPressed(KeyEvent pulsartecla)
 				
 				if((posicionJugador2==26)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==26)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[21][0], casillas[21][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=21;
 					movido = true;
 				}
 				else if((posicionJugador2==26)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==26)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				
 				if((posicionJugador2==36)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[33][0], casillas[33][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=33;
 					movido = true;
 				}
 				else if((posicionJugador2==36)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				
 				else if((posicionJugador2==36)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==36)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 
 				if((posicionJugador2==33)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==33)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[27][0], casillas[27][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=27;
 					movido = true;
 				}
 				else if((posicionJugador2==33)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==33)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 
 				if((posicionJugador2==28)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==28)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[23][0], casillas[23][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=23;
 					movido = true;
 				}
 				else if((posicionJugador2==28)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==28)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 
 				if((posicionJugador2==34)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==34)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[29][0], casillas[29][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=29;
 					movido = true;
 				}
 				else if((posicionJugador2==34)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==34)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 
 				if((posicionJugador2==35)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==35)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[30][0], casillas[30][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=30;
 					movido = true;
 				}
 				else if((posicionJugador2==35)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==35)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				
 				//abajo 1
 				
 				if((posicionJugador2==0)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==0)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==0)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[5][0], casillas[5][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=5;
 					movido = true;
 				}
 				else if((posicionJugador2==0)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 
 				if((posicionJugador2==1)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==1)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==1)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[6][0], casillas[6][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=6;
 					movido = true;
 				}
 				else if((posicionJugador2==1)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 
 				if((posicionJugador2==13)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==13)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==13)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[21][0], casillas[21][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=21;
 					movido = true;
 				}
 				else if((posicionJugador2==13)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				
 				//derecha 2
@@ -2327,189 +2371,189 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[20][0], casillas[20][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=20;
 					movido = true;
 				}
 				else if((posicionJugador2==19)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==19)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==19)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 					
 				else if((posicionJugador2==20)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[21][0], casillas[21][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=21;
 					movido=true;
 				}
 				else if((posicionJugador2==20)&&(key == KeyEvent.VK_UP))
 				{
-					System.out.println("Imposible avanzar por aquí");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==20)&&(key == KeyEvent.VK_LEFT))
 				{
-					System.out.println("Imposible avanzar por aquí");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==20)&&(key == KeyEvent.VK_DOWN))
 				{
-					System.out.println("Imposible avanzar por aquí");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 							
 				//izquierda 3
 				
 				if((posicionJugador2==12)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==12)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==12)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==12)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[11][0], casillas[11][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=11;
 					movido = true;
 				}
 
 				if((posicionJugador2==4)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==4)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==4)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==4)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[3][0], casillas[3][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=3;
 					movido = true;
 				}
 
 				if((posicionJugador2==11)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==11)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==11)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==11)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[10][0], casillas[10][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=10;
 					movido = true;
 				}
 
 				if((posicionJugador2==16)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==16)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==16)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==16)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[9][0], casillas[9][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=9;
 					movido = true;
 				}
 
 				if((posicionJugador2==25)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==25)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==25)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==25)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[24][0], casillas[24][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=24;
 					movido = true;
 				}
 
 				if((posicionJugador2==32)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==32)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==32)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==32)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[31][0], casillas[31][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=31;
 					movido = true;
 				}
 
 				if((posicionJugador2==31)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==31)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==31)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==31)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[30][0], casillas[30][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=30;
 					movido = true;
 				}
@@ -2519,7 +2563,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[6][0], casillas[6][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=6;
 					movido = true;
 				}
@@ -2527,7 +2571,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[0][0], casillas[0][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -2543,24 +2587,24 @@ public void keyPressed(KeyEvent pulsartecla)
 				}
 				else if((posicionJugador2==5)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==5)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				
 				//arriba abajo 6
 				
 				if((posicionJugador2==14)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==14)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[7][0], casillas[7][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=7;
 					movido = true;
 				}
@@ -2568,24 +2612,24 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[17][0], casillas[17][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=17;
 					movido = true;
 				}
 				else if((posicionJugador2==14)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 
 				if((posicionJugador2==15)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==15)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[9][0], casillas[9][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=9;
 					movido = true;
 				}
@@ -2593,24 +2637,24 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[18][0], casillas[18][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=18;
 					movido = true;
 				}
 				else if((posicionJugador2==15)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 
 				if((posicionJugador2==17)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==17)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[14][0], casillas[14][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=14;
 					movido = true;
 				}
@@ -2618,24 +2662,24 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[22][0], casillas[22][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=22;
 					movido = true;
 				}
 				else if((posicionJugador2==17)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 
 				if((posicionJugador2==18)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==18)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[15][0], casillas[15][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=15;
 					movido = true;
 				}
@@ -2643,24 +2687,24 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[24][0], casillas[24][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=24;
 					movido = true;
 				}
 				else if((posicionJugador2==18)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 
 				if((posicionJugador2==27)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==27)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[22][0], casillas[22][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=22;
 					movido = true;
 				}
@@ -2668,13 +2712,13 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[33][0], casillas[33][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=33;
 					movido = true;
 				}
 				else if((posicionJugador2==27)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				
 				//abajo derecha 7
@@ -2682,25 +2726,25 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[3][0], casillas[3][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=3;
 					movido = true;
 				}
 				else if((posicionJugador2==2)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==2)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[7][0], casillas[7][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=7;
 					movido = true;
 				}
 				else if((posicionJugador2==2)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 			
 				// 11=arriba derecha abajo  
@@ -2709,7 +2753,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[30][0], casillas[30][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=30;
 					movido = true;
 				}
@@ -2717,7 +2761,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[24][0], casillas[24][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=24;
 					movido = true;
 				}
@@ -2725,20 +2769,20 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[34][0], casillas[34][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=34;
 					movido = true;
 				}
 				else if((posicionJugador2==29)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 
 				if((posicionJugador2==10)&&(key == KeyEvent.VK_RIGHT)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[11][0], casillas[11][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=11;
 					movido = true;
 				}
@@ -2746,7 +2790,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[3][0], casillas[3][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=3;
 					movido = true;
 				}
@@ -2754,13 +2798,13 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[9][0], casillas[9][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=9;
 					movido = true;
 				}
 				else if((posicionJugador2==10)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				
 				//12=derecha izquierda   
@@ -2768,23 +2812,23 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[9][0], casillas[9][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=9;
 					movido = true;
 				}
 				else if((posicionJugador2==8)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==8)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==8)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[7][0], casillas[7][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=7;
 					movido = true;
 				}
@@ -2794,7 +2838,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[4][0], casillas[4][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -2810,13 +2854,13 @@ public void keyPressed(KeyEvent pulsartecla)
 				}
 				else if((posicionJugador2==3)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==3)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[10][0], casillas[10][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=10;
 					movido = true;
 				}
@@ -2824,7 +2868,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[2][0], casillas[2][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -2842,19 +2886,19 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[24][0], casillas[24][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=24;
 					movido = true;
 				}
 				else if((posicionJugador2==23)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==23)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[28][0], casillas[28][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -2872,7 +2916,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[22][0], casillas[22][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=22;
 					movido = true;
 				}
@@ -2880,19 +2924,19 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[31][0], casillas[31][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=31;
 					movido = true;
 				}
 				else if((posicionJugador1==30)&&(key == KeyEvent.VK_UP)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==30)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[35][0], casillas[35][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -2910,7 +2954,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[29][0], casillas[29][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=29;
 					movido = true;
 				}
@@ -2919,7 +2963,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[7][0], casillas[7][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=7;
 					movido = true;
 				}
@@ -2927,19 +2971,19 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[1][0], casillas[1][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=1;
 					movido = true;
 				}
 				else if((posicionJugador2==6)&&(key == KeyEvent.VK_DOWN)&&(movido==false))
 				{
-					System.out.println("Imposible avanzar");
+					opciones.dlgAvanzar.setVisible(true);
 				}
 				else if((posicionJugador2==6)&&(key == KeyEvent.VK_LEFT)&&(movido==false))
 				{
 					this.tablero.actualizarJugador2(casillas[5][0], casillas[5][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=5;
 					movido = true;
 				}
@@ -2949,7 +2993,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[22][0], casillas[22][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=22;
 					movido = true;
 				}
@@ -2957,7 +3001,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[13][0], casillas[13][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -2975,7 +3019,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[26][0], casillas[26][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -2993,7 +3037,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[20][0], casillas[20][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=20;
 					movido = true;
 				}
@@ -3002,7 +3046,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[23][0], casillas[23][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=23;
 					movido = true;
 				}
@@ -3010,7 +3054,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[17][0], casillas[17][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=17;
 					movido = true;
 				}
@@ -3018,7 +3062,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[27][0], casillas[27][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=27;
 					movido = true;
 				}
@@ -3026,7 +3070,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[21][0], casillas[21][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=21;
 					movido = true;
 				}
@@ -3035,7 +3079,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[25][0], casillas[25][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -3053,7 +3097,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[18][0], casillas[18][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=18;
 					movido = true;
 				}
@@ -3061,7 +3105,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[29][0], casillas[29][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=29;
 					movido = true;
 				}
@@ -3069,7 +3113,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[23][0], casillas[23][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=23;
 					movido = true;
 				}
@@ -3078,7 +3122,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[16][0], casillas[16][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -3096,7 +3140,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[10][0], casillas[10][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=10;
 					movido = true;
 				}
@@ -3104,7 +3148,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[15][0], casillas[15][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=15;
 					movido = true;
 				}
@@ -3112,7 +3156,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[8][0], casillas[8][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=8;
 					movido = true;
 				}
@@ -3121,7 +3165,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[8][0], casillas[8][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=8;
 					movido = true;
 				}
@@ -3129,7 +3173,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[2][0], casillas[2][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -3147,7 +3191,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[14][0], casillas[14][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=14;
 					movido = true;
 				}
@@ -3155,7 +3199,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador2(casillas[6][0], casillas[6][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador2=6;
 					movido = true;
 				}
@@ -3167,9 +3211,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				
 				if(tirada==0 && turno==1)	
 				{
-					System.out.println("");
-					System.out.println("Turno de " + nombreJugador3);
-					System.out.println("");
+					
 					turno++;
 					turnosJugador3++;
 					nombreJugadorActual = nombreJugador3;
@@ -3192,195 +3234,176 @@ public void keyPressed(KeyEvent pulsartecla)
 					
 					if((posicionJugador3==26)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
+						opciones.dlgAvanzar.setVisible(true);
 					}
 					else if((posicionJugador3==26)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[21][0], casillas[21][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=21;
 						movido2 = true;
 					}
 					else if((posicionJugador3==26)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
+						opciones.dlgAvanzar.setVisible(true);
 					}
 					else if((posicionJugador3==26)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
+						opciones.dlgAvanzar.setVisible(true);
 					}
 					
 					if((posicionJugador3==36)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[33][0], casillas[33][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=33;
 						movido2 = true;
 					}
 					else if((posicionJugador3==36)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
+						opciones.dlgAvanzar.setVisible(true);
 					}
 					
 					else if((posicionJugador3==36)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
+						opciones.dlgAvanzar.setVisible(true);
 					}
 					else if((posicionJugador3==36)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
+						opciones.dlgAvanzar.setVisible(true);
 					}
 
 					if((posicionJugador3==33)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
+						opciones.dlgAvanzar.setVisible(true);
 					}
 					else if((posicionJugador3==33)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[27][0], casillas[27][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=27;
 						movido2 = true;
 					}
 					else if((posicionJugador3==33)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
+						opciones.dlgAvanzar.setVisible(true);
 					}
 					else if((posicionJugador3==33)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 
 					if((posicionJugador3==28)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==28)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[23][0], casillas[23][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=23;
 						movido2 = true;
 					}
 					else if((posicionJugador3==28)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==28)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 
 					if((posicionJugador3==34)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==34)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[29][0], casillas[29][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=29;
 						movido2 = true;
 					}
 					else if((posicionJugador3==34)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==34)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 
 					if((posicionJugador3==35)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==35)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[30][0], casillas[30][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=30;
 						movido2 = true;
 					}
 					else if((posicionJugador3==35)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==35)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					
 					//abajo 1
 					
 					if((posicionJugador3==0)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==0)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==0)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[5][0], casillas[5][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=5;
 						movido2 = true;
 					}
 					else if((posicionJugador3==0)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 
 					if((posicionJugador3==1)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==1)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==1)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[6][0], casillas[6][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=6;
 						movido2 = true;
 					}
 					else if((posicionJugador3==1)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 
 					if((posicionJugador3==13)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==13)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==13)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[21][0], casillas[21][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=21;
 						movido2 = true;
 					}
 					else if((posicionJugador3==13)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					
 					//derecha 2
 					
@@ -3389,189 +3412,162 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[20][0], casillas[20][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=20;
 						movido2 = true;
 					}
 					else if((posicionJugador3==19)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==19)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==19)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 						
 					else if((posicionJugador3==20)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[21][0], casillas[21][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=21;
 						movido2=true;
 					}
 					else if((posicionJugador3==20)&&(key == KeyEvent.VK_UP))
 					{
-						System.out.println("Imposible avanzar por aquí");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==20)&&(key == KeyEvent.VK_LEFT))
 					{
-						System.out.println("Imposible avanzar por aquí");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==20)&&(key == KeyEvent.VK_DOWN))
 					{
-						System.out.println("Imposible avanzar por aquí");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 								
 					//izquierda 3
 					
 					if((posicionJugador3==12)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==12)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==12)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==12)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[11][0], casillas[11][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=11;
 						movido2 = true;
 					}
 
 					if((posicionJugador3==4)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==4)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==4)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==4)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[3][0], casillas[3][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=3;
 						movido2 = true;
 					}
 
 					if((posicionJugador3==11)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==11)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==11)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==11)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[10][0], casillas[10][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=10;
 						movido2 = true;
 					}
 
 					if((posicionJugador3==16)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==16)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==16)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==16)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[9][0], casillas[9][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=9;
 						movido2 = true;
 					}
 
 					if((posicionJugador3==25)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==25)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==25)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==25)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[24][0], casillas[24][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=24;
 						movido2 = true;
 					}
 
 					if((posicionJugador3==32)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==32)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==32)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==32)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[31][0], casillas[31][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=31;
 						movido2 = true;
 					}
 
 					if((posicionJugador3==31)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==31)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==31)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==31)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[30][0], casillas[30][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=30;
 						movido2 = true;
 					}
@@ -3581,7 +3577,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[6][0], casillas[6][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=6;
 						movido2 = true;
 					}
@@ -3589,7 +3585,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[0][0], casillas[0][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 
 						if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 						{
@@ -3605,24 +3601,21 @@ public void keyPressed(KeyEvent pulsartecla)
 					}
 					else if((posicionJugador3==5)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==5)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					
 					//arriba abajo 6
 					
 					if((posicionJugador3==14)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==14)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[7][0], casillas[7][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=7;
 						movido2 = true;
 					}
@@ -3630,24 +3623,22 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[17][0], casillas[17][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=17;
 						movido2 = true;
 					}
 					else if((posicionJugador3==14)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 
 					if((posicionJugador3==15)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==15)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[9][0], casillas[9][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=9;
 						movido2 = true;
 					}
@@ -3655,24 +3646,22 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[18][0], casillas[18][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=18;
 						movido2 = true;
 					}
 					else if((posicionJugador3==15)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 
 					if((posicionJugador3==17)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==17)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[14][0], casillas[14][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=14;
 						movido2 = true;
 					}
@@ -3680,24 +3669,22 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[22][0], casillas[22][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=22;
 						movido2 = true;
 					}
 					else if((posicionJugador3==17)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 
 					if((posicionJugador3==18)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==18)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[15][0], casillas[15][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=15;
 						movido2 = true;
 					}
@@ -3705,24 +3692,22 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[24][0], casillas[24][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=24;
 						movido2 = true;
 					}
 					else if((posicionJugador3==18)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 
 					if((posicionJugador3==27)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==27)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[22][0], casillas[22][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=22;
 						movido2 = true;
 					}
@@ -3730,40 +3715,37 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[33][0], casillas[33][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=33;
 						movido2 = true;
 					}
 					else if((posicionJugador3==27)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					
 					//abajo derecha 7
 					if((posicionJugador3==2)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[3][0], casillas[3][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=3;
 						movido2 = true;
 					}
 					else if((posicionJugador3==2)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==2)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[7][0], casillas[7][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=7;
 						movido2 = true;
 					}
 					else if((posicionJugador3==2)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 				
 					// 11=arriba derecha abajo  
 					
@@ -3771,7 +3753,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[30][0], casillas[30][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=30;
 						movido2 = true;
 					}
@@ -3779,7 +3761,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[24][0], casillas[24][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=24;
 						movido2 = true;
 					}
@@ -3787,20 +3769,19 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[34][0], casillas[34][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=34;
 						movido2 = true;
 					}
 					else if((posicionJugador3==29)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 
 					if((posicionJugador3==10)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[11][0], casillas[11][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=11;
 						movido2 = true;
 					}
@@ -3808,7 +3789,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[3][0], casillas[3][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=3;
 						movido2 = true;
 					}
@@ -3816,37 +3797,34 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[9][0], casillas[9][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=9;
 						movido2 = true;
 					}
 					else if((posicionJugador3==10)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					
 					//12=derecha izquierda   
 					if((posicionJugador3==8)&&(key == KeyEvent.VK_RIGHT)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[9][0], casillas[9][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=9;
 						movido2 = true;
 					}
 					else if((posicionJugador3==8)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==8)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==8)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[7][0], casillas[7][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=7;
 						movido2 = true;
 					}
@@ -3856,7 +3834,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[4][0], casillas[4][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 
 						if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 						{
@@ -3872,13 +3850,12 @@ public void keyPressed(KeyEvent pulsartecla)
 					}
 					else if((posicionJugador3==3)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==3)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[10][0], casillas[10][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=10;
 						movido2 = true;
 					}
@@ -3886,7 +3863,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[2][0], casillas[2][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 
 						if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 						{
@@ -3904,19 +3881,18 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[24][0], casillas[24][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=24;
 						movido2 = true;
 					}
 					else if((posicionJugador3==23)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==23)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[28][0], casillas[28][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 
 						if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 						{
@@ -3934,7 +3910,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[22][0], casillas[22][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=22;
 						movido2 = true;
 					}
@@ -3942,19 +3918,18 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[31][0], casillas[31][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=31;
 						movido2 = true;
 					}
 					else if((posicionJugador3==30)&&(key == KeyEvent.VK_UP)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==30)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[35][0], casillas[35][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 
 						if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 						{
@@ -3972,7 +3947,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[29][0], casillas[29][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=29;
 						movido2 = true;
 					}
@@ -3981,7 +3956,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[7][0], casillas[7][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=7;
 						movido2 = true;
 					}
@@ -3989,19 +3964,18 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[1][0], casillas[1][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=1;
 						movido2 = true;
 					}
 					else if((posicionJugador3==6)&&(key == KeyEvent.VK_DOWN)&&(movido2==false))
 					{
-						System.out.println("Imposible avanzar");
-					}
+						opciones.dlgAvanzar.setVisible(true);					}
 					else if((posicionJugador3==6)&&(key == KeyEvent.VK_LEFT)&&(movido2==false))
 					{
 						this.tablero.actualizarJugador3(casillas[5][0], casillas[5][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=5;
 						movido2 = true;
 					}
@@ -4011,7 +3985,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[22][0], casillas[22][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=22;
 						movido2 = true;
 					}
@@ -4019,7 +3993,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[13][0], casillas[13][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 
 						if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 						{
@@ -4037,7 +4011,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[26][0], casillas[26][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						opciones.dlgOpciones.setVisible(true);
 						if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 						{
@@ -4054,7 +4028,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[20][0], casillas[20][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=20;
 						movido2 = true;
 					}
@@ -4063,7 +4037,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[23][0], casillas[23][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=23;
 						movido2 = true;
 					}
@@ -4071,7 +4045,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[17][0], casillas[17][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=17;
 						movido2 = true;
 					}
@@ -4079,7 +4053,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[27][0], casillas[27][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=27;
 						movido2 = true;
 					}
@@ -4087,7 +4061,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[21][0], casillas[21][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=21;
 						movido2 = true;
 					}
@@ -4096,7 +4070,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[25][0], casillas[25][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 
 						if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 						{
@@ -4114,7 +4088,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[18][0], casillas[18][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=18;
 						movido2 = true;
 					}
@@ -4122,7 +4096,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[29][0], casillas[29][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=29;
 						movido2 = true;
 					}
@@ -4130,7 +4104,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[23][0], casillas[23][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=23;
 						movido2 = true;
 					}
@@ -4139,7 +4113,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[16][0], casillas[16][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 
 						if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 						{
@@ -4157,7 +4131,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[10][0], casillas[10][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=10;
 						movido2 = true;
 					}
@@ -4165,7 +4139,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[15][0], casillas[15][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=15;
 						movido2 = true;
 					}
@@ -4173,7 +4147,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[8][0], casillas[8][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=8;
 						movido2 = true;
 					}
@@ -4182,7 +4156,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[8][0], casillas[8][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=8;
 						movido2 = true;
 					}
@@ -4190,7 +4164,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[2][0], casillas[2][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 
 						if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 						{
@@ -4208,7 +4182,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[14][0], casillas[14][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=14;
 						movido2 = true;
 					}
@@ -4216,7 +4190,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					{
 						this.tablero.actualizarJugador3(casillas[6][0], casillas[6][1]);
 						tirada=tirada-1;
-						System.out.println(tirada);
+						tablero.pintarTiradas(String.valueOf(tirada));
 						posicionJugador3=6;
 						movido2 = true;
 					}
@@ -4228,9 +4202,7 @@ public void keyPressed(KeyEvent pulsartecla)
 					
 					if(tirada==0 && turno==2)	
 					{
-						System.out.println("");
-						System.out.println("Turno de " + nombreJugador4);
-						System.out.println("");
+					
 						turno++;
 						turnosJugador4++;
 						nombreJugadorActual = nombreJugador4;
@@ -4251,195 +4223,168 @@ public void keyPressed(KeyEvent pulsartecla)
 				
 				if((posicionJugador4==26)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==26)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[21][0], casillas[21][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=21;
 					movido3 = true;
 				}
 				else if((posicionJugador4==26)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==26)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				
 				if((posicionJugador4==36)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[33][0], casillas[33][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=33;
 					movido3 = true;
 				}
 				else if((posicionJugador4==36)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				
 				else if((posicionJugador4==36)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==36)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 
 				if((posicionJugador4==33)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==33)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[27][0], casillas[27][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=27;
 					movido3 = true;
 				}
 				else if((posicionJugador4==33)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==33)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 
 				if((posicionJugador4==28)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==28)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[23][0], casillas[23][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=23;
 					movido3 = true;
 				}
 				else if((posicionJugador4==28)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==28)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 
 				if((posicionJugador4==34)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==34)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[29][0], casillas[29][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=29;
 					movido3 = true;
 				}
 				else if((posicionJugador4==34)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==34)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 
 				if((posicionJugador4==35)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==35)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[30][0], casillas[30][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=30;
 					movido3 = true;
 				}
 				else if((posicionJugador4==35)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==35)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				
 				//abajo 1
 				
 				if((posicionJugador4==0)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==0)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==0)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[5][0], casillas[5][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=5;
 					movido3 = true;
 				}
 				else if((posicionJugador4==0)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 
 				if((posicionJugador4==1)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==1)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==1)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[6][0], casillas[6][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=6;
 					movido3 = true;
 				}
 				else if((posicionJugador4==1)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 
 				if((posicionJugador4==13)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==13)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==13)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[21][0], casillas[21][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=21;
 					movido3 = true;
 				}
 				else if((posicionJugador4==13)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				
 				//derecha 2
 				
@@ -4448,189 +4393,162 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[20][0], casillas[20][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=20;
 					movido3 = true;
 				}
 				else if((posicionJugador4==19)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==19)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==19)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 					
 				else if((posicionJugador4==20)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[21][0], casillas[21][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador3=21;
 					movido3=true;
 				}
 				else if((posicionJugador4==20)&&(key == KeyEvent.VK_UP))
 				{
-					System.out.println("Imposible avanzar por aquí");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==20)&&(key == KeyEvent.VK_LEFT))
 				{
-					System.out.println("Imposible avanzar por aquí");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==20)&&(key == KeyEvent.VK_DOWN))
 				{
-					System.out.println("Imposible avanzar por aquí");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 							
 				//izquierda 3
 				
 				if((posicionJugador4==12)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==12)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==12)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==12)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[11][0], casillas[11][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=11;
 					movido3 = true;
 				}
 
 				if((posicionJugador4==4)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==4)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==4)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==4)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[3][0], casillas[3][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=3;
 					movido3 = true;
 				}
 
 				if((posicionJugador4==11)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==11)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==11)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==11)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[10][0], casillas[10][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=10;
 					movido3 = true;
 				}
 
 				if((posicionJugador4==16)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==16)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==16)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==16)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[9][0], casillas[9][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=9;
 					movido3 = true;
 				}
 
 				if((posicionJugador4==25)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==25)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==25)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==25)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[24][0], casillas[24][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=24;
 					movido3 = true;
 				}
 
 				if((posicionJugador4==32)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==32)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==32)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==32)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[31][0], casillas[31][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=31;
 					movido3 = true;
 				}
 
 				if((posicionJugador4==31)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==31)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==31)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==31)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[30][0], casillas[30][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=30;
 					movido3 = true;
 				}
@@ -4640,7 +4558,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[6][0], casillas[6][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=6;
 					movido3 = true;
 				}
@@ -4648,7 +4566,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[0][0], casillas[0][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -4664,24 +4582,21 @@ public void keyPressed(KeyEvent pulsartecla)
 				}
 				else if((posicionJugador4==5)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==5)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				
 				//arriba abajo 6
 				
 				if((posicionJugador4==14)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==14)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[7][0], casillas[7][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=7;
 					movido3 = true;
 				}
@@ -4689,24 +4604,22 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[17][0], casillas[17][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=17;
 					movido3 = true;
 				}
 				else if((posicionJugador4==14)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 
 				if((posicionJugador4==15)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==15)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[9][0], casillas[9][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=9;
 					movido3 = true;
 				}
@@ -4714,24 +4627,22 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[18][0], casillas[18][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=18;
 					movido3 = true;
 				}
 				else if((posicionJugador4==15)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 
 				if((posicionJugador4==17)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==17)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[14][0], casillas[14][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=14;
 					movido3 = true;
 				}
@@ -4739,24 +4650,22 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[22][0], casillas[22][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=22;
 					movido3 = true;
 				}
 				else if((posicionJugador4==17)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 
 				if((posicionJugador4==18)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==18)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[15][0], casillas[15][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=15;
 					movido3 = true;
 				}
@@ -4764,24 +4673,22 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[24][0], casillas[24][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=24;
 					movido3 = true;
 				}
 				else if((posicionJugador4==18)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 
 				if((posicionJugador4==27)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==27)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[22][0], casillas[22][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=22;
 					movido3 = true;
 				}
@@ -4789,40 +4696,37 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[33][0], casillas[33][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=33;
 					movido3 = true;
 				}
 				else if((posicionJugador4==27)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				
 				//abajo derecha 7
 				if((posicionJugador4==2)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[3][0], casillas[3][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=3;
 					movido3 = true;
 				}
 				else if((posicionJugador4==2)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==2)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[7][0], casillas[7][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=7;
 					movido3 = true;
 				}
 				else if((posicionJugador4==2)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 			
 				// 11=arriba derecha abajo  
 				
@@ -4830,7 +4734,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[30][0], casillas[30][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=30;
 					movido3 = true;
 				}
@@ -4838,7 +4742,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[24][0], casillas[24][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=24;
 					movido3 = true;
 				}
@@ -4846,20 +4750,19 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[34][0], casillas[34][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=34;
 					movido3 = true;
 				}
 				else if((posicionJugador4==29)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 
 				if((posicionJugador4==10)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[11][0], casillas[11][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=11;
 					movido3 = true;
 				}
@@ -4867,7 +4770,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[3][0], casillas[3][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=3;
 					movido3 = true;
 				}
@@ -4875,37 +4778,34 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[9][0], casillas[9][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=9;
 					movido3 = true;
 				}
 				else if((posicionJugador4==10)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				
 				//12=derecha izquierda   
 				if((posicionJugador4==8)&&(key == KeyEvent.VK_RIGHT)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[9][0], casillas[9][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=9;
 					movido3 = true;
 				}
 				else if((posicionJugador4==8)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==8)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==8)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[7][0], casillas[7][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=7;
 					movido3 = true;
 				}
@@ -4915,7 +4815,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[4][0], casillas[4][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -4931,13 +4831,12 @@ public void keyPressed(KeyEvent pulsartecla)
 				}
 				else if((posicionJugador4==3)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==3)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[10][0], casillas[10][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=10;
 					movido3 = true;
 				}
@@ -4945,7 +4844,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[2][0], casillas[2][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -4963,19 +4862,18 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[24][0], casillas[24][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=24;
 					movido3 = true;
 				}
 				else if((posicionJugador4==23)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==23)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[28][0], casillas[28][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -4993,7 +4891,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[22][0], casillas[22][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=22;
 					movido3 = true;
 				}
@@ -5001,19 +4899,18 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[31][0], casillas[31][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=31;
 					movido3 = true;
 				}
 				else if((posicionJugador4==30)&&(key == KeyEvent.VK_UP)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==30)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[35][0], casillas[35][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -5031,7 +4928,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[29][0], casillas[29][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=29;
 					movido3 = true;
 				}
@@ -5040,7 +4937,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[7][0], casillas[7][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=7;
 					movido3 = true;
 				}
@@ -5048,19 +4945,18 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[1][0], casillas[1][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=1;
 					movido3 = true;
 				}
 				else if((posicionJugador4==6)&&(key == KeyEvent.VK_DOWN)&&(movido3==false))
 				{
-					System.out.println("Imposible avanzar");
-				}
+					opciones.dlgAvanzar.setVisible(true);				}
 				else if((posicionJugador4==6)&&(key == KeyEvent.VK_LEFT)&&(movido3==false))
 				{
 					this.tablero.actualizarJugador4(casillas[5][0], casillas[5][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=5;
 					movido3 = true;
 				}
@@ -5070,7 +4966,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[22][0], casillas[22][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=22;
 					movido3 = true;
 				}
@@ -5078,7 +4974,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[13][0], casillas[13][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -5096,7 +4992,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[26][0], casillas[26][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -5114,7 +5010,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[20][0], casillas[20][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=20;
 					movido3 = true;
 				}
@@ -5123,7 +5019,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[23][0], casillas[23][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=23;
 					movido3 = true;
 				}
@@ -5131,7 +5027,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[17][0], casillas[17][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=17;
 					movido3 = true;
 				}
@@ -5139,7 +5035,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[27][0], casillas[27][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=27;
 					movido3 = true;
 				}
@@ -5147,7 +5043,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[21][0], casillas[21][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=21;
 					movido3 = true;
 				}
@@ -5156,7 +5052,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[25][0], casillas[25][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -5174,7 +5070,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[18][0], casillas[18][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=18;
 					movido3 = true;
 				}
@@ -5182,7 +5078,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[29][0], casillas[29][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=29;
 					movido3 = true;
 				}
@@ -5190,7 +5086,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[23][0], casillas[23][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=23;
 					movido3 = true;
 				}
@@ -5199,7 +5095,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[16][0], casillas[16][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -5217,7 +5113,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[10][0], casillas[10][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=10;
 					movido3 = true;
 				}
@@ -5225,7 +5121,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[15][0], casillas[15][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=15;
 					movido3 = true;
 				}
@@ -5233,7 +5129,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[8][0], casillas[8][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=8;
 					movido3 = true;
 				}
@@ -5242,7 +5138,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[8][0], casillas[8][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=8;
 					movido3 = true;
 				}
@@ -5250,7 +5146,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[2][0], casillas[2][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 
 					if(listaarmas.size()!=0 || listasus.size()!=0 || listahabitaciones.size()!=0)
 					{
@@ -5268,7 +5164,7 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[14][0], casillas[14][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=14;
 					movido3 = true;
 				}
@@ -5276,17 +5172,15 @@ public void keyPressed(KeyEvent pulsartecla)
 				{
 					this.tablero.actualizarJugador4(casillas[6][0], casillas[6][1]);
 					tirada=tirada-1;
-					System.out.println(tirada);
+					tablero.pintarTiradas(String.valueOf(tirada));
 					posicionJugador4=6;
 					movido3 = true;
 				}
 				if(tirada==0 && turno==3)	
 				{
-					System.out.println("");
-					System.out.println("Turno de " + nombreJugador1);
+					
 					turno=0;
 					turnosJugador1++;
-					System.out.println("");
 					nombreJugadorActual = nombreJugador1;
 					tablero.pintarNombreJugadorActual(nombreJugadorActual);
 				}

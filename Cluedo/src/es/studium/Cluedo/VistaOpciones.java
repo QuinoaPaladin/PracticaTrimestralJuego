@@ -17,9 +17,18 @@ public class VistaOpciones
 	Button btnSospechoso = new Button("Sospechoso");
 	Button btnHabitacion = new Button("Habitación");
 	
-	//Resolver el caso
+	//DIÁLOGO IMPOSIBLE AVANZAR
+	Dialog dlgAvanzar = new Dialog (ventanaCluedo, "Imposible", true);
+	Label lblImposible = new Label ("Imposible avanzar por aquí");
 	
+	//DIÁLOGO OBTENCIÓN CARTA
+	Dialog dlgCartaNueva = new Dialog (ventanaCluedo, "Nueva Carta", true);
+	Label lblcartaNueva = new Label ("Nueva Carta");
 	
+	//DIÁLOGO DEBES ESTAR EN HABITACIÓN
+	Dialog dlgEstarHabitacion = new Dialog (ventanaCluedo, "Debes moverte", true);
+	Label lblEstarHabitacion = new Label ("Debes estar en una habitación");		
+			
 	public VistaOpciones()
 	{		
 		dlgOpciones.setLayout(new FlowLayout());
@@ -31,5 +40,27 @@ public class VistaOpciones
 		dlgOpciones.add(btnSospechoso);
 		dlgOpciones.add(btnHabitacion);
 		dlgOpciones.setVisible(false);		
+		
+		dlgAvanzar.setLayout(new FlowLayout());
+		dlgAvanzar.setSize(200,80);
+		dlgAvanzar.setResizable(false);
+		dlgAvanzar.setLocationRelativeTo(null);
+		dlgAvanzar.add(lblImposible);
+		dlgAvanzar.setVisible(false);	
+		
+		dlgCartaNueva.setLayout(new FlowLayout());
+		dlgCartaNueva.setSize(200,80);
+		dlgCartaNueva.setResizable(false);
+		dlgCartaNueva.setLocationRelativeTo(null);
+		dlgCartaNueva.add(lblcartaNueva);
+		dlgCartaNueva.setVisible(false);	
+		
+
+		dlgEstarHabitacion.setLayout(new FlowLayout());
+		dlgEstarHabitacion.setSize(400,80);
+		dlgEstarHabitacion.setResizable(false);
+		dlgEstarHabitacion.setLocationRelativeTo(null);
+		dlgEstarHabitacion.add(lblEstarHabitacion);
+		dlgEstarHabitacion.setVisible(false);
 	}
 }

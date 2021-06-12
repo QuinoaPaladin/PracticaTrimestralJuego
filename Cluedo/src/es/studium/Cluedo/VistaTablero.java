@@ -51,11 +51,19 @@ public class VistaTablero extends Frame
 	int yNombreJugador4 = 625;
 	String jugador4 = "";
 	
-	
+	//TURNO ACTUAL DE JUGADOR
 	int xJugadorActual = 255;
 	int yJugadorActual = 475;
 	String jugadorActualBase = "Es el turno de ";
 	String jugadorActualCambia = "Jugador 1";
+	
+	
+	//MOVIMIENTOS
+	int xMovimientos =16;
+	int yMovimientos =500;
+	String palabraMovimientos ="Nº Movimientos:";
+	String numeroMovimientos ="0";
+	
 	
 	public VistaTablero()
 	{
@@ -76,6 +84,8 @@ public class VistaTablero extends Frame
 		g.drawImage(imagentablero,0,0,this);
 		g.drawImage(dado,20,440,this);
 		g.drawString("Tirar el dado", 16,525);
+		g.drawString(palabraMovimientos, 16,550);
+		g.drawString(numeroMovimientos, 130,550);
 		
 		
 		g.drawString(jugadorActualBase + jugadorActualCambia, 255,475);
@@ -210,6 +220,12 @@ public class VistaTablero extends Frame
 	{
 		
 		this.jugadorActualCambia = nombreJugadorActual;
+		repaint();
+	}
+	public void pintarTiradas(String tirada)
+	{
+		
+		this.numeroMovimientos = tirada;
 		repaint();
 	}
 }

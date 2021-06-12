@@ -25,7 +25,13 @@ public class VistaResolver
 	//HAS GANADO
 	Dialog dlgGanaste = new Dialog(frmResolver, "¡Resolviste el caso!", true);
 	Label lblGanaste = new Label("¡Has resuelto el caso!");
+	Label lblTurnosLetras = new Label("Has tardado:");
+	Label lblTurnosNumero = new Label("5");
 	Button btnGanaste = new Button("Aceptar");
+	
+	//HAS PERDIDO
+	Dialog dlgPerdiste = new Dialog(frmResolver, "Has perdido...", true);
+	Label lblPerdiste = new Label("No has acertado...ahora solo puedes moverte, para que no te aburras");
 	
 	public VistaResolver()
 	{
@@ -48,8 +54,17 @@ public class VistaResolver
 		dlgGanaste.setResizable(false);
 		dlgGanaste.setLocationRelativeTo(null);
 		dlgGanaste.add(lblGanaste);
+		dlgGanaste.add(lblTurnosLetras);
+		dlgGanaste.add(lblTurnosNumero);
 		dlgGanaste.add(btnGanaste);
 		dlgResolver.setVisible(false);
+		
+		dlgPerdiste.setLayout(new FlowLayout());
+		dlgPerdiste.setSize(400,80);
+		dlgPerdiste.setResizable(false);
+		dlgPerdiste.setLocationRelativeTo(null);
+		dlgPerdiste.add(lblPerdiste);
+		dlgPerdiste.setVisible(false);
 		
 	}
 }
